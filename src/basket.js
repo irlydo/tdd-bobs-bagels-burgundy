@@ -65,7 +65,7 @@ class Basket {
     if (!fullMenu[itemName]) {
       throw new Error('Item not found in the menu.')
     }
-    return `Price of ${itemName}: £${fullMenu[itemName]}`
+    return fullMenu[itemName] // Returns just the price
   }
 
   basketTotal() {

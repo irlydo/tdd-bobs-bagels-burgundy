@@ -73,8 +73,6 @@ describe('Basket', () => {
   //Test 7
   it('price checker for items', () => {
     const expected = 3.99
-
-    basket.priceChecker('brownie')
     let checkPrice = basket.priceChecker('brownie')
     expect(checkPrice).toEqual(expected)
   })
