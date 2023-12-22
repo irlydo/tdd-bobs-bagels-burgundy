@@ -12,28 +12,42 @@ class Basket {
     getBasket() {
         return this.basket
     }
+
     addItem(itemName, itemQuantity) {
-        const fullMenu = MENU.GetMenu()
-        for (const items in fullMenu) {
-            if (items === itemName) {
-                const insideBasket = {
-                    item: itemName,
-                    quantity: itemQuantity,
-                    price: fullMenu[items]
-                }
-                this.basket.push(insideBasket)
-            }
+        const fullMenu = MENU.GetMenu();
+        if (!fullMenu[itemName]) {
+            throw new Error("Item not found in the menu.");
+        }
+    
+        const existingItem = this.basket.find(item => item.item === itemName);
+        if (existingItem) {
+            existingItem.quantity += itemQuantity;
+        } else {
+            this.basket.push({ item: itemName, quantity: itemQuantity, price: fullMenu[itemName] });
+        }
+    
+        if (this.totalItemsInBasket() > this.basketSize) {
+            throw new Error("Basket full, please choose a bigger basket.");
         }
     }
 
-    removeItem(itemName) {
-        for (let i = 0; i < this.basket.length; i++)
-            if (this.basket[i].item === itemName) {
-                this.basket.splice(i, 1)
-                return this.basket
-            }
-            else if (this.basket[i].item !== itemName)
-                return "This item is not in the basket."
+    totalItemsInBasket() {
+        return this.basket.reduce((total, item) => total + item.quantity, 0);
+    }
+
+    removeItem(itemName, quantityToRemove = 1) {
+        const itemIndex = this.basket.findIndex(item => item.item === itemName);
+        if (itemIndex === -1) {
+            throw new Error("This item is not in the basket.");
+        }
+
+        if (this.basket[itemIndex].quantity > quantityToRemove) {
+            this.basket[itemIndex].quantity -= quantityToRemove;
+        } else if (this.basket[itemIndex].quantity === quantityToRemove) {
+            this.basket.splice(itemIndex, 1);
+        } else {
+            throw new Error("Not enough quantity in the basket to remove.");
+        }
     }
 
     basketCapacity() {
